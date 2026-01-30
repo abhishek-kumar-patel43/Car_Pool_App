@@ -1,33 +1,42 @@
 public class Ride {
+    private int id;
+    private String source;
+    private String destination;
+    private int totalSeats;
+    private int availableSeats;
+    private double fare;
+    private User driver;
 
-    int id;
-    String source;
-    String destination;
-    int total_seats;
-    int avliable_seats;
-    double fare;
-    User user;
-
-    public Ride(int id, String source, String destination, int total_seats, int avliable_seats, double fare, User user) {
+    public Ride(int id, String source, String destination, int totalSeats, double fare, User driver) {
         this.id = id;
         this.source = source;
         this.destination = destination;
-        this.total_seats = total_seats;
-        this.avliable_seats = avliable_seats;
+        this.totalSeats = totalSeats;
+        this.availableSeats = totalSeats;
         this.fare = fare;
-        this.user = user;
+        this.driver = driver;
+    }
+
+    public int getId() { return id; }
+    public String getSource() { return source; }
+    public String getDestination() { return destination; }
+    public int getAvailableSeats() { return availableSeats; }
+    public double getFare() { return fare; }
+
+    public boolean bookSeats(int seats) {
+        if (seats <= availableSeats) {
+            availableSeats -= seats;
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String toString() {
-        return "Ride{" +
-                "id=" + id +
-                ", source='" + source + '\'' +
-                ", destination='" + destination + '\'' +
-                ", total_seats=" + total_seats +
-                ", avliable_seats=" + avliable_seats +
+        return "Ride{id=" + id +
+                ", " + source + " -> " + destination +
+                ", seats=" + availableSeats +
                 ", fare=" + fare +
-                ", user=" + user +
-                '}';
+                ", driver=" + driver.getName() + "}";
     }
 }

@@ -1,24 +1,26 @@
 public class User {
+    private int id;
+    private String name;
+    private String role; // DRIVER or RIDER
+    private String password;
 
-    int user_id;
-    String name;
-    String email;
-    String password;
-
-    public User(int user_id, String name, String email, String password) {
-        this.user_id = user_id;
+    public User(int id, String name, String role, String password) {
+        this.id = id;
         this.name = name;
-        this.email = email;
+        this.role = role;
         this.password = password;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getRole() { return role; }
+
+    public boolean checkPassword(String inputPassword) {
+        return this.password.equals(inputPassword);
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "User{id=" + id + ", name='" + name + "', role='" + role + "'}";
     }
 }
-

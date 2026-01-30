@@ -1,112 +1,77 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RideBookingSystem {
 
-    List<User> users = new ArrayList<>();
-    List<Ride> rideList = new ArrayList<>();
-    List<Booking> bookingList = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
+    private List<Ride> rides = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
-    public User signup(int user_id, String name, String email, String password) {
-        User user = new User(user_id, name, email, password);
+    private int bookingCounter = 1;
+
+    public void addUser(User user) {
         users.add(user);
-        return user;
     }
 
-    public User login(String email, String password) {
+    public void createRide(Ride ride) {
+        rides.add(ride);
+    }
+
+    public List<Ride> searchRides(String source, String destination) {
+        List<Ride> result = new ArrayList<>();
+        for (Ride r : rides) {
+            if (r.getSource().equalsIgnoreCase(source) &&
+                    r.getDestination().equalsIgnoreCase(destination) &&
+                    r.getAvailableSeats() > 0) {
+                result.add(r);
+            }
+        }
+        return result;
+    }
+
+    public Booking bookRide(int rideId, int userId, int seats) {
+        Ride selectedRide = null;
+        User rider = null;
+
+        for (Ride r : rides) {
+            if (r.getId() == rideId) {
+                selectedRide = r;
+                break;
+            }
+        }
+
         for (User u : users) {
-            if (u.email.equals(email) && u.password.equals(password)) {
-                return u;
+            if (u.getId() == userId) {
+                rider = u;
+                break;
             }
         }
-        return null;
-    }
 
-    public void updateUserDetails(User user, String name, String email) {
-        user.name = name;
-        user.email = email;
-    }
-
-    public void deleteUserDetails(User user) {
-        users.remove(user);
-    }
-
-    public void createRide(int id, String source, String destination, int seats, double fare, User user) {
-        Ride ride = new Ride(id, source, destination, seats, fare, user);
-        rideList.add(ride);
-    }
-
-    public List<Ride> showAllRide() {
-        return rideList;
-    }
-
-    public List<Ride> searchRide(String source, String destination, int seats) {
-        List<Ride> availableRide = new ArrayList<>();
-        for (Ride ride : rideList) {
-            if (ride.source.equals(source) &&
-                    ride.destination.equals(destination) &&
-                    ride.seats >= seats) {
-                availableRide.add(ride);
-            }
+        if (selectedRide == null || rider == null) {
+            System.out.println("Invalid ride or user ID.");
+            return null;
         }
-        return availableRide;
-    }
 
-    public void updateRide(Ride ride, int seats, double fare) {
-        ride.seats = seats;
-        ride.fare = fare;
-    }
-
-    public void deleteRide(Ride ride) {
-        rideList.remove(ride);
-    }
-
-    public Booking bookRide(Ride ride, User user, int seatsBooked) {
-        if (ride.seats < seatsBooked) return null;
-
-        ride.seats -= seatsBooked;
-        Booking booking = new Booking(
-                bookingList.size() + 1,
-                user,
-                ride,
-                seatsBooked,
-                seatsBooked * ride.fare
-        );
-        bookingList.add(booking);
-        return booking;
-    }
-
-    public List<Ride> viewRideCreated(User user) {
-        List<Ride> viewCreated = new ArrayList<>();
-        for (Ride ride : rideList) {
-            if (ride.user.equals(user)) {
-                viewCreated.add(ride);
-            }
-        }
-        return viewCreated;
-    }
-
-    public List<Booking> viewRideBooked(User user) {
-        List<Booking> viewBooked = new ArrayList<>();
-        for (Booking booking : bookingList) {
-            if (booking.user.equals(user)) {
-                viewBooked.add(booking);
-            }
-        }
-        return viewBooked;
-    }
-
-    public void updateBooking(Booking booking, int newSeats) {
-        int diff = newSeats - booking.seats_booked;
-        if (booking.ride.seats >= diff) {
-            booking.ride.seats -= diff;
-            booking.seats_booked = newSeats;
-            booking.total_fare = newSeats * booking.ride.fare;
+        if (selectedRide.bookSeats(seats)) {
+            Booking booking = new Booking(bookingCounter++, selectedRide, rider, seats);
+            bookings.add(booking);
+            return booking;
+        } else {
+            System.out.println("Not enough seats available.");
+            return null;
         }
     }
 
-    public void deleteBooking(Booking booking) {
-        booking.ride.seats += booking.seats_booked;
-        bookingList.remove(booking);
+    public void showAllRides() {
+        for (Ride r : rides) {
+            System.out.println(r);
+        }
     }
+}
+public User login(int userId, String password) {
+    for (User u : users) {
+        if (u.getId() == userId && u.checkPassword(password)) {
+            return u;
+        }
+    }
+    return null;
 }

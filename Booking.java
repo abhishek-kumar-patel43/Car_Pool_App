@@ -1,27 +1,24 @@
 public class Booking {
+    private int id;
+    private Ride ride;
+    private User rider;
+    private int seatsBooked;
+    private double totalAmount;
 
-    int Booking_id;
-    Ride ride;
-    User user;
-    int seats_booked;
-    double total_fare;
-
-    public Booking(int booking_id, Ride ride, User user, int seats_booked, double total_fare) {
-        Booking_id = booking_id;
+    public Booking(int id, Ride ride, User rider, int seatsBooked) {
+        this.id = id;
         this.ride = ride;
-        this.user = user;
-        this.seats_booked = seats_booked;
-        this.total_fare = total_fare;
+        this.rider = rider;
+        this.seatsBooked = seatsBooked;
+        this.totalAmount = seatsBooked * ride.getFare();
     }
 
     @Override
     public String toString() {
-        return "Booking{" +
-                "Booking_id=" + Booking_id +
-                ", ride=" + ride +
-                ", user=" + user +
-                ", seats_booked=" + seats_booked +
-                ", Total_fare=" + total_fare +
-                '}';
+        return "Booking{id=" + id +
+                ", rider=" + rider.getName() +
+                ", ride=" + ride.getId() +
+                ", seats=" + seatsBooked +
+                ", total=" + totalAmount + "}";
     }
 }
